@@ -2,12 +2,11 @@ package transition_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/mattn/go-sqlite3"
-
-	"github.com/qor/qor/test/utils"
 	"github.com/qor/transition"
 )
 
@@ -18,9 +17,17 @@ type Order struct {
 	transition.Transition
 }
 
-var db = utils.TestDB()
+var db *gorm.DB
+
+// Setup a mock database using Sqlite3
 
 func init() {
+	var err error
+	db, err = gorm.Open("sqlite3", "/tmp/mock-transition.db")
+	if err != nil {
+		panic(fmt.Errorf("failed to setup mock database %v", err))
+	}
+
 	for _, model := range []interface{}{&Order{}, &transition.StateChangeLog{}} {
 		if err := db.DropTableIfExists(model).Error; err != nil {
 			panic(err)

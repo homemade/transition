@@ -3,6 +3,7 @@ package transition
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/qor/admin"
@@ -13,12 +14,16 @@ import (
 
 // StateChangeLog a model that used to keep state change logs
 type StateChangeLog struct {
-	gorm.Model
+	ID         string `gorm:"primary_key"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  *time.Time `sql:"index"`
 	ReferTable string
 	ReferID    string
 	From       string
 	To         string
-	Note       string `sql:"size:1024"`
+	Changes    *string `gorm:"type:text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci"`
+	Note       string  `gorm:"type:varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci"`
 	audited.AuditedModel
 }
 

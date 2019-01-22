@@ -1,6 +1,7 @@
 package transition
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/qor/admin"
 	"github.com/qor/qor/resource"
 	"github.com/qor/roles"
+	"github.com/segmentio/ksuid"
 )
 
 // Transition is a struct, embed it in your struct to enable state machine for the struct
@@ -68,7 +70,7 @@ func (sm *StateMachine) Event(name string) *Event {
 }
 
 // Trigger trigger an event
-func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, notes ...string) error {
+func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, changes map[string]interface{}, notes ...string) error {
 	var (
 		newTx    *gorm.DB
 		stateWas = value.GetState()
@@ -140,12 +142,28 @@ func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, notes ..
 			}
 
 			if newTx != nil {
+
+				// add changes
+				var changesJSON *string
+				if changes != nil {
+					data, err := json.Marshal(changes)
+					var s string
+					if err != nil {
+						s = fmt.Sprintf("failed to marshal changes %v", err)
+					} else {
+						s = string(data)
+					}
+					changesJSON = &s
+				}
+
 				scope := newTx.NewScope(value)
 				log := StateChangeLog{
+					ID:         ksuid.New().String(),
 					ReferTable: scope.TableName(),
 					ReferID:    GenerateReferenceKey(value, tx),
 					From:       stateWas,
 					To:         transition.to,
+					Changes:    changesJSON,
 					Note:       strings.Join(notes, ""),
 				}
 				return newTx.Save(&log).Error
