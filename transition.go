@@ -70,7 +70,7 @@ func (sm *StateMachine) Event(name string) *Event {
 }
 
 // Trigger trigger an event
-func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, changes map[string]interface{}, notes ...string) error {
+func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, snapshot map[string]interface{}, notes ...string) error {
 	var (
 		newTx    *gorm.DB
 		stateWas = value.GetState()
@@ -143,17 +143,17 @@ func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, changes 
 
 			if newTx != nil {
 
-				// add changes
-				var changesJSON *string
-				if changes != nil {
-					data, err := json.Marshal(changes)
+				// add snapshot
+				var snapshotJSON *string
+				if snapshot != nil {
+					data, err := json.Marshal(snapshot)
 					var s string
 					if err != nil {
-						s = fmt.Sprintf("failed to marshal changes %v", err)
+						s = fmt.Sprintf("failed to marshal snapshot %v", err)
 					} else {
 						s = string(data)
 					}
-					changesJSON = &s
+					snapshotJSON = &s
 				}
 
 				scope := newTx.NewScope(value)
@@ -163,7 +163,7 @@ func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, changes 
 					ReferID:    GenerateReferenceKey(value, tx),
 					From:       stateWas,
 					To:         transition.to,
-					Changes:    changesJSON,
+					Snapshot:   snapshotJSON,
 					Note:       strings.Join(notes, ""),
 				}
 				return newTx.Save(&log).Error
