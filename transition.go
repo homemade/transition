@@ -70,7 +70,7 @@ func (sm *StateMachine) Event(name string) *Event {
 }
 
 // Trigger trigger an event
-func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, snapshot map[string]interface{}, notes ...string) error {
+func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, notes ...string) error {
 	var (
 		newTx    *gorm.DB
 		stateWas = value.GetState()
@@ -143,12 +143,12 @@ func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, snapshot
 
 			if newTx != nil {
 
-				// add snapshot
+				// add a snapshot
 				var snapshotJSON *string
 				data, err := json.Marshal(value)
 				var s string
 				if err != nil {
-					s = fmt.Sprintf("failed to marshal snapshot %v", err)
+					s = fmt.Sprintf("failed to marshal a snapshot %v", err)
 				} else {
 					s = string(data)
 				}
