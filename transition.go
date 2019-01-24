@@ -145,16 +145,14 @@ func (sm *StateMachine) Trigger(name string, value Stater, tx *gorm.DB, snapshot
 
 				// add snapshot
 				var snapshotJSON *string
-				if snapshot != nil {
-					data, err := json.Marshal(snapshot)
-					var s string
-					if err != nil {
-						s = fmt.Sprintf("failed to marshal snapshot %v", err)
-					} else {
-						s = string(data)
-					}
-					snapshotJSON = &s
+				data, err := json.Marshal(value)
+				var s string
+				if err != nil {
+					s = fmt.Sprintf("failed to marshal snapshot %v", err)
+				} else {
+					s = string(data)
 				}
+				snapshotJSON = &s
 
 				scope := newTx.NewScope(value)
 				log := StateChangeLog{
