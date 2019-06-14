@@ -14,10 +14,10 @@ import (
 
 // StateChangeLog a model that used to keep state change logs
 type StateChangeLog struct {
-	ID         string `gorm:"primary_key"`
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	DeletedAt  *time.Time `sql:"index"`
+	ID         string     `gorm:"primary_key"`
+	CreatedAt  time.Time  `gorm:"precision:6"`
+	UpdatedAt  time.Time  `gorm:"precision:6"`
+	DeletedAt  *time.Time `gorm:"precision:6" sql:"index"`
 	ReferTable string
 	ReferID    string
 	From       string
