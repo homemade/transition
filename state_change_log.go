@@ -19,7 +19,7 @@ type StateChangeLog struct {
 	UpdatedAt  time.Time  `gorm:"precision:6"`
 	DeletedAt  *time.Time `gorm:"precision:6" sql:"index"`
 	ReferTable string
-	ReferID    string `gorm:"type:varchar(36)" sql:"index"`
+	ReferID    string `gorm:"type:varchar(56)" sql:"index"`
 	From       string
 	To         string
 	Snapshot   *string `gorm:"type:text"`
