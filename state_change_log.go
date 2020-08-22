@@ -22,8 +22,8 @@ type StateChangeLog struct {
 	ReferID    string
 	From       string
 	To         string
-	Snapshot   *string `gorm:"type:text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci"`
-	Note       string  `gorm:"type:varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci"`
+	Snapshot   *string `gorm:"type:text"`
+	Note       string  `gorm:"type:varchar(1024)"`
 	audited.AuditedModel
 }
 
