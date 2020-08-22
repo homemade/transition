@@ -12,14 +12,14 @@ import (
 	"github.com/qor/roles"
 )
 
-// StateChangeLog a model that used to keep state change logs
+// StateChangeLog a model that is used to keep state change logs
 type StateChangeLog struct {
-	ID         string     `gorm:"primary_key"`
+	ID         string     `gorm:"type:varchar(36);primary_key"`
 	CreatedAt  time.Time  `gorm:"precision:6"`
 	UpdatedAt  time.Time  `gorm:"precision:6"`
 	DeletedAt  *time.Time `gorm:"precision:6" sql:"index"`
 	ReferTable string
-	ReferID    string
+	ReferID    string `gorm:"type:varchar(36)" sql:"index"`
 	From       string
 	To         string
 	Snapshot   *string `gorm:"type:text"`
